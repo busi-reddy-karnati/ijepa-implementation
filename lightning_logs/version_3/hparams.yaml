@@ -1,0 +1,24 @@
+img_size: 224
+patch_size: 16
+in_chans: 3
+embed_dim: 64
+enc_heads: 8
+enc_depth: 8
+decoder_depth: 6
+lr: 0.001
+weight_decay: 0.05
+target_aspect_ratio:
+- 0.75
+- 1.5
+target_scale:
+- 0.15
+- 0.2
+context_aspect_ratio: 1
+context_scale:
+- 0.85
+- 1.0
+M: 4
+m: 0.996
+m_start_end:
+- 0.996
+- 1.0

@@ -1,9 +1,13 @@
 import numpy as np
+import os
+import glob
 import pytorch_lightning as pl
 import torch.nn as nn
 import torch
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
+from PIL import Image
+from torchvision import transforms
 from pytorch_lightning.callbacks import (
     ModelCheckpoint,
     LearningRateMonitor,
@@ -18,10 +22,29 @@ class IJEPADataset(Dataset):
     def __init__(self,
                  dataset_path,
                  stage='train',
+                 img_size=(224, 224)
                  ):
         super().__init__()
-        img1 =torch.randn(3, 224, 224)
-        self.data = img1.repeat(100, 1, 1, 1)
+        #  These are for random images
+        # img1 =torch.randn(3, 224, 224)
+        # self.data = img1.repeat(100, 1, 1, 1)
+        self.dataset_path = dataset_path
+        self.img_size = img_size
+        self.data = self.load_images()
+
+    def load_images(self):
+        image_files = []
+        for root, _, files in os.walk(self.dataset_path):
+            for file in files:
+                if file.lower().endswith('.jpeg'):
+                    image_files.append(os.path.join(root, file))
+        transform = transforms.Compose([transforms.Resize(self.img_size), transforms.ToTensor()])
+        images = []
+        for img_file in image_files:
+            img = Image.open(img_file).convert('RGB')
+            img = transform(img)
+            images.append(img)
+        return images
         
     def __len__(self):
         return len(self.data)
@@ -189,8 +212,8 @@ class IJEPA(pl.LightningModule):
 
 
 if __name__ == '__main__':
-    train_dataset = "../dataset/train"
-    val_dataset = "../dataset/val"
+    train_dataset = r"C:\Users\busis\Desktop\Research\Data\tiny-imagenet-200\tiny-imagenet-200\train"
+    val_dataset = r"C:\Users\busis\Desktop\Research\Data\tiny-imagenet-200\tiny-imagenet-200\val"
     dataset = D2VDataModule(train_dataset_path=train_dataset, val_dataset_path=val_dataset)
 
     model = IJEPA(img_size=224, patch_size=16, in_chans=3, embed_dim=64, enc_heads=8, enc_depth=8, decoder_depth=6, lr=1e-3)
