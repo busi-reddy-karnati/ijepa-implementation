@@ -17,7 +17,7 @@ from pytorch_lightning.loggers import WandbLogger
 from model import IJEPA_base
 
 
-'''Dummy Dataset'''
+# Dataset module.
 class IJEPADataset(Dataset):
     def __init__(self,
                  dataset_path,
@@ -53,10 +53,6 @@ class IJEPADataset(Dataset):
         return self.data[index]
 
 
-'''Placeholder for datamodule in pytorch lightning'''
-'''
-Placeholder for datamodule in pytorch lightning
-'''
 class D2VDataModule(pl.LightningDataModule):
     def __init__(self,
                  train_dataset_path,
